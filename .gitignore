@@ -6,3 +6,9 @@ terraform.tfstate.backup
 
 # VScode
 .vscode
+
+# Vagrant
+.vagrant
+
+# Kubernetes
+.kubeconfig

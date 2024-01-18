@@ -1,0 +1,127 @@
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: Cluster
+metadata:
+  name: nyrvama-prod-mgmt
+  namespace: default
+spec:
+  clusterNetwork:
+    cniConfig:
+      cilium: {}
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+    services:
+      cidrBlocks:
+      - 10.21.0.0/16
+  controlPlaneConfiguration:
+    count: 2
+    endpoint:
+      host: 10.20.30.200
+    machineGroupRef:
+      kind: VSphereMachineConfig
+      name: nyrvama-prod-mgmt-cp
+  datacenterRef:
+    kind: VSphereDatacenterConfig
+    name: nyrvama-prod-mgmt
+  eksaVersion: v0.18.4
+  externalEtcdConfiguration:
+    count: 1
+    machineGroupRef:
+      kind: VSphereMachineConfig
+      name: nyrvama-prod-mgmt-etcd
+  kubernetesVersion: "1.28"
+  machineHealthCheck:
+    nodeStartupTimeout: 10m0s
+    unhealthyMachineTimeout: 5m0s
+  managementCluster:
+    name: nyrvama-prod-mgmt
+  workerNodeGroupConfigurations:
+  - autoscalingConfiguration:
+      maxCount: 1
+      minCount: 1
+    count: 1
+    machineGroupRef:
+      kind: VSphereMachineConfig
+      name: nyrvama-prod-mgmt
+    name: md-0
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: VSphereDatacenterConfig
+metadata:
+  name: nyrvama-prod-mgmt
+  namespace: default
+spec:
+  # server: "vcsa01.cai02.nyrvama.com"
+  server: 10.20.1.114
+  insecure: true
+  thumbprint: "C9:33:48:F0:53:E7:84:1E:30:01:EE:A4:5B:D5:AD:1E:B3:FF:5B:2A"
+  datacenter: cai02.nyrvama.com
+  network: /cai02.nyrvama.com/network/VM dNetwork
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: VSphereMachineConfig
+metadata:
+  annotations:
+    anywhere.eks.amazonaws.com/etcd: "true"
+  name: nyrvama-prod-mgmt-etcd
+  namespace: default
+spec:
+  cloneMode: linkedClone
+  datastore: /cai02.nyrvama.com/datastore/datastore_iscsi01
+  diskGiB: 22
+  folder: /cai02.nyrvama.com/vm/EKSA
+  memoryMiB: 8192
+  numCPUs: 2
+  osFamily: bottlerocket
+  resourcePool: /cai02.nyrvama.com/host/production/Resources/EKSA ResourcePool
+  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.4-eks-d-1-28-12-eks-a-56-amd64
+  users:
+  - name: ec2-user
+    sshAuthorizedKeys:
+    - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFlUzJ4lBuLf5oaQadbmPiDOcCSsZLgdDh4lSNZ3yVRb
+      dejarik-ra
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: VSphereMachineConfig
+metadata:
+  annotations:
+    anywhere.eks.amazonaws.com/control-plane: "true"
+  name: nyrvama-prod-mgmt-cp
+  namespace: default
+spec:
+  cloneMode: linkedClone
+  datastore: /cai02.nyrvama.com/datastore/datastore_iscsi01
+  diskGiB: 22
+  folder: /cai02.nyrvama.com/vm/EKSA
+  memoryMiB: 8192
+  numCPUs: 4
+  osFamily: bottlerocket
+  resourcePool: /cai02.nyrvama.com/host/production/Resources/EKSA ResourcePool
+  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.4-eks-d-1-28-12-eks-a-56-amd64
+  users:
+  - name: ec2-user
+    sshAuthorizedKeys:
+    - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFlUzJ4lBuLf5oaQadbmPiDOcCSsZLgdDh4lSNZ3yVRb
+      dejarik-ra
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: VSphereMachineConfig
+metadata:
+  name: nyrvama-prod-mgmt
+  namespace: default
+spec:
+  cloneMode: linkedClone
+  datastore: /cai02.nyrvama.com/datastore/datastore_iscsi01
+  diskGiB: 22
+  folder: /cai02.nyrvama.com/vm/EKSA
+  memoryMiB: 8192
+  numCPUs: 4
+  osFamily: bottlerocket
+  resourcePool: /cai02.nyrvama.com/host/production/Resources/EKSA ResourcePool
+  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.4-eks-d-1-28-12-eks-a-56-amd64
+  users:
+  - name: ec2-user
+    sshAuthorizedKeys:
+    - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFlUzJ4lBuLf5oaQadbmPiDOcCSsZLgdDh4lSNZ3yVRb
+      dejarik-ra
+---
