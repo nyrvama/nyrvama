@@ -2,8 +2,53 @@
 # Inventory
 ################################################################################
 
+#
+#? NOTE: Global permissions
+#
+# As of time of writing, vSphere doesn't expose a way to set a role for a user
+# or group at a "global" level through via its programatic API.
+#
+# Instead, the suggested workaround from [AWS](https://anywhere.eks.amazonaws.com/docs/getting-started/vsphere/vsphere-preparation/#manually-set-global-permissions-role-in-global-permissions-ui)
+# is to implement this configuration manually using the web client.
+#
+# The following `terraform` block is NOT actually a valid resource, but simply
+# serves as breadcrumbs for future reference.
+#
+# resource "vsphere_entity_permissions" "root" {
+#   entity_id   = vsphere_instance.root.id
+#   entity_type = ""
+
+#   permissions {
+#     user_or_group = "${upper(var.vsphere_domain)}\\${local.eksa_user}"
+#     role_id       = vsphere_role.eksa_global.id
+#     is_group      = false
+#     propagate     = true
+#   }
+
+#   permissions {
+#     user_or_group = "${upper(var.vsphere_domain)}\\${local.csp_user}"
+#     role_id       = data.vsphere_role.read_only.id
+#     is_group      = false
+#     propagate     = false
+#   }
+# }
+
 resource "vsphere_datacenter" "prod" {
   name = "cai02.nyrvama.com"
+}
+
+resource "vsphere_entity_permissions" "datacenters" {
+  for_each = toset([vsphere_datacenter.prod.moid])
+
+  entity_id   = each.key
+  entity_type = "Datacenter"
+
+  permissions {
+    user_or_group = "${upper(var.vsphere_domain)}\\${local.csp_user}"
+    role_id       = data.vsphere_role.read_only.id
+    is_group      = false
+    propagate     = false    
+  }
 }
 
 resource "vsphere_host" "esxi01" {
@@ -21,6 +66,20 @@ resource "vsphere_host" "esxi01" {
   lockdown        = "disabled"
 }
 
+resource "vsphere_entity_permissions" "hosts" {
+  for_each = toset([vsphere_host.esxi01.id])
+  
+  entity_id   = each.key
+  entity_type = "HostSystem"
+
+  permissions {
+    user_or_group = "${upper(var.vsphere_domain)}\\${local.csp_user}"
+    role_id       = data.vsphere_role.read_only.id
+    is_group      = false
+    propagate     = false
+  }
+}
+
 # terraform import vsphere_compute_cluster.prod /cai02.nyrvama.com/host/production
 resource "vsphere_compute_cluster" "prod" {
   name            = "production"
@@ -35,6 +94,19 @@ resource "vsphere_compute_cluster" "prod" {
   ha_datastore_apd_response = "restartConservative"
   ha_datastore_pdl_response = "restartAggressive"
 }
+resource "vsphere_entity_permissions" "cluster" {
+  for_each = toset([vsphere_compute_cluster.prod.id])
+  
+  entity_id   = each.key
+  entity_type = "HostSystem"
+
+  permissions {
+    user_or_group = "${upper(var.vsphere_domain)}\\${local.csp_user}"
+    role_id       = data.vsphere_role.read_only.id
+    is_group      = false
+    propagate     = false
+  }
+}
 
 ################################################################################
 # Datastores
@@ -43,6 +115,27 @@ resource "vsphere_compute_cluster" "prod" {
 data "vsphere_datastore" "iscsi01_esxi01" {
   name          = vsphere_vmfs_datastore.iscsi01_esxi01.name
   datacenter_id = vsphere_datacenter.prod.moid
+}
+
+resource "vsphere_entity_permissions" "datastores" {
+  for_each = toset([data.vsphere_datastore.iscsi01_esxi01.id])
+
+  entity_id   = each.key
+  entity_type = "Datastore"
+
+  permissions {
+    user_or_group = "${upper(var.vsphere_domain)}\\${local.eksa_user}"
+    role_id       = vsphere_role.eksa_user.id
+    is_group      = false
+    propagate     = true
+  }
+
+  permissions {
+    user_or_group = "${upper(var.vsphere_domain)}\\${local.csp_user}"
+    role_id       = vsphere_role.cns_datastore.id
+    is_group      = false
+    propagate     = false
+  }
 }
 
 ################################################################################
@@ -76,6 +169,18 @@ resource "vsphere_distributed_port_group" "VM_vcsa01" {
   distributed_virtual_switch_uuid = vsphere_distributed_virtual_switch.VM_vcsa01.id
 
   vlan_id = 0
+}
+
+resource "vsphere_entity_permissions" "eksa_user_dPortGroup" {
+  entity_id   = vsphere_distributed_port_group.VM_vcsa01.id
+  entity_type = "DistributedVirtualPortgroup"
+
+  permissions {
+    user_or_group = "${upper(var.vsphere_domain)}\\${local.eksa_user}"
+    role_id       = vsphere_role.eksa_user.id
+    is_group      = false
+    propagate     = true
+  }
 }
 
 ################################################################################
