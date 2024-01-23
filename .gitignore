@@ -11,4 +11,4 @@ terraform.tfstate.backup
 .vagrant
 
 # Kubernetes
-.kubeconfig
+*.kubeconfig
