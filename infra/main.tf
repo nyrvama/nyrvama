@@ -1,5 +1,5 @@
 terraform {
-  required_version = "=1.6.6"
+  required_version = "=1.9.2"
   backend "local" {
   }
   required_providers {
@@ -7,7 +7,7 @@ terraform {
       version = "=3.6.0"
     }
     vsphere = {
-      version = "=2.6.1"
+      version = "=2.8.2"
     }
   }
 }
