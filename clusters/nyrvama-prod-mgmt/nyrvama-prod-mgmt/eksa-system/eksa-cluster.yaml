@@ -33,7 +33,7 @@ spec:
     machineGroupRef:
       kind: VSphereMachineConfig
       name: nyrvama-prod-mgmt-etcd
-  kubernetesVersion: "1.28"
+  kubernetesVersion: "1.30"
   machineHealthCheck:
     maxUnhealthy: 100%
     nodeStartupTimeout: 10m0s
@@ -81,7 +81,7 @@ spec:
   numCPUs: 4
   osFamily: bottlerocket
   resourcePool: /cai02.nyrvama.com/host/production/Resources/EKSA ResourcePool
-  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.10-eks-d-1-28-27-eks-a-69-amd64
+  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.30.1-eks-d-1-30-9-eks-a-69-amd64
   users:
   - name: ec2-user
     sshAuthorizedKeys:
@@ -102,7 +102,7 @@ spec:
   numCPUs: 4
   osFamily: bottlerocket
   resourcePool: /cai02.nyrvama.com/host/production/Resources/EKSA ResourcePool
-  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.10-eks-d-1-28-27-eks-a-69-amd64
+  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.30.1-eks-d-1-30-9-eks-a-69-amd64
   users:
   - name: ec2-user
     sshAuthorizedKeys:
@@ -125,7 +125,7 @@ spec:
   numCPUs: 2
   osFamily: bottlerocket
   resourcePool: /cai02.nyrvama.com/host/production/Resources/EKSA ResourcePool
-  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.10-eks-d-1-28-27-eks-a-69-amd64
+  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.30.1-eks-d-1-30-9-eks-a-69-amd64
   users:
   - name: ec2-user
     sshAuthorizedKeys:
