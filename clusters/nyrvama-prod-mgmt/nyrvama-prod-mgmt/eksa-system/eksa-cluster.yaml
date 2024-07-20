@@ -1,6 +1,8 @@
 apiVersion: anywhere.eks.amazonaws.com/v1alpha1
 kind: Cluster
 metadata:
+  annotations:
+    anywhere.eks.amazonaws.com/management-components-version: v0.19.7
   name: nyrvama-prod-mgmt
   namespace: default
 spec:
@@ -20,10 +22,12 @@ spec:
     machineGroupRef:
       kind: VSphereMachineConfig
       name: nyrvama-prod-mgmt-cp
+    machineHealthCheck:
+      maxUnhealthy: 100%
   datacenterRef:
     kind: VSphereDatacenterConfig
     name: nyrvama-prod-mgmt
-  eksaVersion: v0.18.4
+  eksaVersion: v0.19.7
   externalEtcdConfiguration:
     count: 1
     machineGroupRef:
@@ -31,6 +35,7 @@ spec:
       name: nyrvama-prod-mgmt-etcd
   kubernetesVersion: "1.28"
   machineHealthCheck:
+    maxUnhealthy: 100%
     nodeStartupTimeout: 10m0s
     unhealthyMachineTimeout: 5m0s
   managementCluster:
@@ -43,6 +48,8 @@ spec:
     machineGroupRef:
       kind: VSphereMachineConfig
       name: nyrvama-prod-mgmt
+    machineHealthCheck:
+      maxUnhealthy: 40%
     name: md-0
 ---
 apiVersion: anywhere.eks.amazonaws.com/v1alpha1
@@ -74,7 +81,7 @@ spec:
   numCPUs: 2
   osFamily: bottlerocket
   resourcePool: /cai02.nyrvama.com/host/production/Resources/EKSA ResourcePool
-  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.4-eks-d-1-28-12-eks-a-56-amd64
+  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.10-eks-d-1-28-25-eks-a-67-amd64
   users:
   - name: ec2-user
     sshAuthorizedKeys:
@@ -97,7 +104,7 @@ spec:
   numCPUs: 4
   osFamily: bottlerocket
   resourcePool: /cai02.nyrvama.com/host/production/Resources/EKSA ResourcePool
-  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.4-eks-d-1-28-12-eks-a-56-amd64
+  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.10-eks-d-1-28-25-eks-a-67-amd64
   users:
   - name: ec2-user
     sshAuthorizedKeys:
@@ -118,7 +125,7 @@ spec:
   numCPUs: 4
   osFamily: bottlerocket
   resourcePool: /cai02.nyrvama.com/host/production/Resources/EKSA ResourcePool
-  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.4-eks-d-1-28-12-eks-a-56-amd64
+  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.10-eks-d-1-28-25-eks-a-67-amd64
   users:
   - name: ec2-user
     sshAuthorizedKeys:
