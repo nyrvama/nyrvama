@@ -2,7 +2,7 @@ apiVersion: anywhere.eks.amazonaws.com/v1alpha1
 kind: Cluster
 metadata:
   annotations:
-    anywhere.eks.amazonaws.com/management-components-version: v0.19.7
+    anywhere.eks.amazonaws.com/management-components-version: v0.20.1
   name: nyrvama-prod-mgmt
   namespace: default
 spec:
@@ -27,7 +27,7 @@ spec:
   datacenterRef:
     kind: VSphereDatacenterConfig
     name: nyrvama-prod-mgmt
-  eksaVersion: v0.19.7
+  eksaVersion: v0.20.1
   externalEtcdConfiguration:
     count: 1
     machineGroupRef:
@@ -69,29 +69,6 @@ apiVersion: anywhere.eks.amazonaws.com/v1alpha1
 kind: VSphereMachineConfig
 metadata:
   annotations:
-    anywhere.eks.amazonaws.com/etcd: "true"
-  name: nyrvama-prod-mgmt-etcd
-  namespace: default
-spec:
-  cloneMode: linkedClone
-  datastore: /cai02.nyrvama.com/datastore/datastore_iscsi01
-  diskGiB: 22
-  folder: /cai02.nyrvama.com/vm/EKSA
-  memoryMiB: 8192
-  numCPUs: 2
-  osFamily: bottlerocket
-  resourcePool: /cai02.nyrvama.com/host/production/Resources/EKSA ResourcePool
-  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.10-eks-d-1-28-25-eks-a-67-amd64
-  users:
-  - name: ec2-user
-    sshAuthorizedKeys:
-    - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFlUzJ4lBuLf5oaQadbmPiDOcCSsZLgdDh4lSNZ3yVRb
-      dejarik-ra
----
-apiVersion: anywhere.eks.amazonaws.com/v1alpha1
-kind: VSphereMachineConfig
-metadata:
-  annotations:
     anywhere.eks.amazonaws.com/control-plane: "true"
   name: nyrvama-prod-mgmt-cp
   namespace: default
@@ -104,7 +81,7 @@ spec:
   numCPUs: 4
   osFamily: bottlerocket
   resourcePool: /cai02.nyrvama.com/host/production/Resources/EKSA ResourcePool
-  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.10-eks-d-1-28-25-eks-a-67-amd64
+  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.10-eks-d-1-28-27-eks-a-69-amd64
   users:
   - name: ec2-user
     sshAuthorizedKeys:
@@ -125,7 +102,30 @@ spec:
   numCPUs: 4
   osFamily: bottlerocket
   resourcePool: /cai02.nyrvama.com/host/production/Resources/EKSA ResourcePool
-  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.10-eks-d-1-28-25-eks-a-67-amd64
+  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.10-eks-d-1-28-27-eks-a-69-amd64
+  users:
+  - name: ec2-user
+    sshAuthorizedKeys:
+    - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFlUzJ4lBuLf5oaQadbmPiDOcCSsZLgdDh4lSNZ3yVRb
+      dejarik-ra
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: VSphereMachineConfig
+metadata:
+  annotations:
+    anywhere.eks.amazonaws.com/etcd: "true"
+  name: nyrvama-prod-mgmt-etcd
+  namespace: default
+spec:
+  cloneMode: linkedClone
+  datastore: /cai02.nyrvama.com/datastore/datastore_iscsi01
+  diskGiB: 22
+  folder: /cai02.nyrvama.com/vm/EKSA
+  memoryMiB: 8192
+  numCPUs: 2
+  osFamily: bottlerocket
+  resourcePool: /cai02.nyrvama.com/host/production/Resources/EKSA ResourcePool
+  template: /cai02.nyrvama.com/vm/EKSA/Templates/bottlerocket-v1.28.10-eks-d-1-28-27-eks-a-69-amd64
   users:
   - name: ec2-user
     sshAuthorizedKeys:
